@@ -95,25 +95,16 @@ function parse(data) {
             return parts[0].trim();
         });
     let lineData = [];
-    //console.table(lineData);
     let output = "";
 
     //pass 1
     for (i = 0; i < lineDataDirty.length; i++) {
         if (lineDataDirty[i].slice(0, 2) == "//" || lineDataDirty[i] == "") {
             //comment or empty line
-            /* console.log(
-                `COMMENT/EMPTY on line ${i}\lineDataDirty[i] = ${lineDataDirty[i]}`
-            ); */
         } else if (lineDataDirty[i].slice(0, 1) == "(") {
             //label
             const symbol = lineDataDirty[i].slice(1, -1);
             symbolMap.set(symbol, lineData.length);
-            console.log(
-                `LABEL\nsymbol = ${symbol}\nlineNumberSaved = ${symbolMap.get(
-                    symbol
-                )}`
-            );
         } else {
             //instruction line
             lineData.push(lineDataDirty[i]);
@@ -125,16 +116,10 @@ function parse(data) {
         if (lineData[i].slice(0, 1) == "@") {
             //a instruction
             let bin = convertAInstruction(lineData[i]);
-            /* console.log(
-                `A INSTRUCTION on line ${i}\nlineData[i] = ${lineData[i]}\n bin = ${bin}`
-            ); */
             output += `${bin}\n`;
         } else {
             //c instruction
             let bin = convertCInstruction(lineData[i]);
-            /* console.log(
-                `C INSTRUCTION on line ${i}\nlineData[i] = ${lineData[i]}\n bin = ${bin}`
-            ); */
             output += `${bin}\n`;
         }
     }
@@ -147,27 +132,13 @@ function convertAInstruction(str) {
 
     if (symbolMap.has(symbol)) {
         num = symbolMap.get(symbol);
-        console.log(`HAS SYMBOL!\nsymbol = ${symbol}\naddress = ${num}`);
     } else {
-        console.log(
-            `check type of symbol\ntypeof ${symbol} == ${typeof parseInt(
-                symbol
-            )}`
-        );
         if (isNaN(parseInt(symbol))) {
             symbolMap.set(symbol, variableNumber);
             num = symbolMap.get(symbol);
             variableNumber++;
-            console.log(
-                `NO HAS SYMBOL : SAVING!\nsymbol = ${symbol}\naddress = ${num}`
-            );
         } else {
             num = parseInt(symbol);
-            console.log(
-                `NO HAS SYMBOL BUT IS NUMBER!\naddress = ${num}\nparseInt == ${parseInt(
-                    symbol
-                )}`
-            );
         }
     }
 
@@ -193,23 +164,19 @@ function convertCInstruction(str) {
 
     if (str.includes("=") && str.includes(";")) {
         //includes cdj
-        console.log("IT'S CDJ!");
         c = findComp(cdjArray[0]);
         d = findDest(cdjArray[1]);
         j = findJump(cdjArray[2]);
     } else if (str.includes("=")) {
         //includes cd
-        console.log("IT'S CD!");
         c = findComp(cdjArray[0]);
         d = findDest(cdjArray[1]);
     } else if (str.includes(";")) {
         //includes cj
-        console.log("IT'S CJ!");
         c = findComp(cdjArray[0]);
         j = findJump(cdjArray[2]);
     } else {
         //only c
-        console.log("IT'S C!");
         c = findComp(cdjArray[0]);
     }
 
@@ -219,7 +186,6 @@ function convertCInstruction(str) {
 
 function splitCDJ(str) {
     let parts = str.split(";");
-    console.log(`str = ${str}\nparts = ${parts}`);
     let compAndDest;
     let c, d, j;
 
@@ -227,21 +193,15 @@ function splitCDJ(str) {
     if (parts.length === 2) {
         j = parts[1];
         compAndDest = parts[0].split("=");
-        console.log(`j = ${j}\ncompAndDest = ${compAndDest}`);
     } else {
         compAndDest = parts[0].split("=");
-        console.log(`compAndDest = ${compAndDest}`);
     }
     if (compAndDest.length === 2) {
         d = compAndDest[0];
         c = compAndDest[1];
-        console.log(`d = ${compAndDest[0]}\nc = ${compAndDest[1]}`);
     } else {
         c = compAndDest[0];
-        console.log(`c = ${compAndDest[0]}`);
     }
-
-    console.log(`str = ${str}\ncdj = ${c},${d},${j}`);
 
     return [c, d, j];
 }
