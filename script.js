@@ -1,6 +1,59 @@
 let inputTa = document.getElementById("input-ta");
 let outputTa = document.getElementById("output-ta");
 let assembleBtn = document.getElementById("assemble-btn");
+let loadBtn = document.getElementById("load-btn");
+let fileInput = document.getElementById("file-input");
+let saveBtn = document.getElementById("save-btn");
+
+let loadedFileName = null;
+
+assembleBtn.addEventListener("click", () => {
+    buildSymbolMap();
+    let inputData = inputTa.value;
+    let parsedData = parse(inputData);
+    outputTa.value = parsedData;
+});
+loadBtn.addEventListener("click", () => {
+    fileInput.click();
+});
+fileInput.addEventListener("change", function (e) {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    outputTa.value = "";
+
+    loadedFileName = file.name.replace(/\.[^/.]+$/, "");
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        inputTa.value = e.target.result;
+    };
+    reader.readAsText(file);
+});
+saveBtn.addEventListener("click", async () => {
+    const text = outputTa.value;
+    const suggestedName = loadedFileName
+        ? `${loadedFileName}.hack`
+        : "output.hack";
+    const opts = {
+        suggestedName: suggestedName,
+        types: [
+            {
+                description: "Hack file",
+                accept: { "text/plain": [".hack"] },
+            },
+        ],
+    };
+    try {
+        const handle = await window.showSaveFilePicker(opts);
+        const writable = await handle.createWritable();
+        await writable.write(text);
+        await writable.close();
+    } catch (err) {
+        console.error(err.name, err.message);
+    }
+});
 
 let variableNumber = 16;
 let symbolMap = new Map([
@@ -78,13 +131,6 @@ const jumpMap = new Map([
     ["JLE", "110"],
     ["JMP", "111"],
 ]);
-
-assembleBtn.addEventListener("click", () => {
-    buildSymbolMap();
-    let inputData = inputTa.value;
-    let parsedData = parse(inputData);
-    outputTa.value = parsedData;
-});
 
 function parse(data) {
     let lineDataDirty = data

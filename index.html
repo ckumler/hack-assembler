@@ -41,7 +41,21 @@
                     </fieldset>
                 </div>
             </div>
-            <button class="tui-button" id="assemble-btn">>Assemble!</button>
+            <div id="buttons">
+                <button class="tui-button orange-168 white-text" id="load-btn">
+                    Load
+                </button>
+                <input
+                    type="file"
+                    id="file-input"
+                    accept=".asm"
+                    style="display: none"
+                />
+                <button class="tui-button" id="assemble-btn">Assemble!</button>
+                <button class="tui-button orange-168 white-text" id="save-btn">
+                    Save
+                </button>
+            </div>
         </div>
     </body>
 </html>
