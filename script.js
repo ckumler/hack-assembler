@@ -2,6 +2,7 @@ let inputTa = document.getElementById("input-ta");
 let outputTa = document.getElementById("output-ta");
 let assembleBtn = document.getElementById("assemble-btn");
 
+let variableNumber = 16;
 const symbolMap = new Map([
     ["SP", 0],
     ["LCL", 1],
@@ -85,7 +86,7 @@ assembleBtn.addEventListener("click", () => {
 });
 
 function parse(data) {
-    let lineData = data
+    let lineDataDirty = data
         .toUpperCase()
         .replace(/[^\S\n]/g, "")
         .split("\n")
@@ -93,25 +94,41 @@ function parse(data) {
             let parts = line.split("//");
             return parts[0].trim();
         });
+    let lineData = [];
     //console.table(lineData);
     let output = "";
 
-    for (i = 0; i < lineData.length; i++) {
-        if (lineData[i].slice(0, 2) == "//" || lineData[i] == "") {
+    //pass 1
+    for (i = 0; i < lineDataDirty.length; i++) {
+        if (lineDataDirty[i].slice(0, 2) == "//" || lineDataDirty[i] == "") {
             //comment or empty line
             /* console.log(
-                `COMMENT/EMPTY on line ${i}\nlineData[i] = ${lineData[i]}`
+                `COMMENT/EMPTY on line ${i}\lineDataDirty[i] = ${lineDataDirty[i]}`
             ); */
-        } else if (lineData[i].slice(0, 1) == "@") {
+        } else if (lineDataDirty[i].slice(0, 1) == "(") {
+            //label
+            const symbol = lineDataDirty[i].slice(1, -1);
+            symbolMap.set(symbol, lineData.length);
+            console.log(
+                `LABEL\nsymbol = ${symbol}\nlineNumberSaved = ${symbolMap.get(
+                    symbol
+                )}`
+            );
+        } else {
+            //instruction line
+            lineData.push(lineDataDirty[i]);
+        }
+    }
+
+    //pass 2
+    for (i = 0; i < lineData.length; i++) {
+        if (lineData[i].slice(0, 1) == "@") {
             //a instruction
             let bin = convertAInstruction(lineData[i]);
             /* console.log(
                 `A INSTRUCTION on line ${i}\nlineData[i] = ${lineData[i]}\n bin = ${bin}`
             ); */
             output += `${bin}\n`;
-        } else if (lineData[i].slice(0, 1) == "(") {
-            //label
-            output += `${lineData[i]}\n`;
         } else {
             //c instruction
             let bin = convertCInstruction(lineData[i]);
@@ -132,8 +149,26 @@ function convertAInstruction(str) {
         num = symbolMap.get(symbol);
         console.log(`HAS SYMBOL!\nsymbol = ${symbol}\naddress = ${num}`);
     } else {
-        num = parseInt(symbol);
-        console.log(`NO HAS SYMBOL!\nsymbol = ${symbol}\naddress = ${num}`);
+        console.log(
+            `check type of symbol\ntypeof ${symbol} == ${typeof parseInt(
+                symbol
+            )}`
+        );
+        if (isNaN(parseInt(symbol))) {
+            symbolMap.set(symbol, variableNumber);
+            num = symbolMap.get(symbol);
+            variableNumber++;
+            console.log(
+                `NO HAS SYMBOL : SAVING!\nsymbol = ${symbol}\naddress = ${num}`
+            );
+        } else {
+            num = parseInt(symbol);
+            console.log(
+                `NO HAS SYMBOL BUT IS NUMBER!\naddress = ${num}\nparseInt == ${parseInt(
+                    symbol
+                )}`
+            );
+        }
     }
 
     if (num > 32767) {
