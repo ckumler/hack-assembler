@@ -3,7 +3,7 @@ let outputTa = document.getElementById("output-ta");
 let assembleBtn = document.getElementById("assemble-btn");
 
 let variableNumber = 16;
-const symbolMap = new Map([
+let symbolMap = new Map([
     ["SP", 0],
     ["LCL", 1],
     ["ARG", 2],
@@ -80,6 +80,7 @@ const jumpMap = new Map([
 ]);
 
 assembleBtn.addEventListener("click", () => {
+    buildSymbolMap();
     let inputData = inputTa.value;
     let parsedData = parse(inputData);
     outputTa.value = parsedData;
@@ -224,4 +225,34 @@ function findDest(str) {
 function findJump(str) {
     let jump = `${jumpMap.get(str)}`;
     return jump;
+}
+
+function buildSymbolMap() {
+    variableNumber = 16;
+    symbolMap.clear();
+    symbolMap = new Map([
+        ["SP", 0],
+        ["LCL", 1],
+        ["ARG", 2],
+        ["THIS", 3],
+        ["THAT", 4],
+        ["R0", 0],
+        ["R1", 1],
+        ["R2", 2],
+        ["R3", 3],
+        ["R4", 4],
+        ["R5", 5],
+        ["R6", 6],
+        ["R7", 7],
+        ["R8", 8],
+        ["R9", 9],
+        ["R10", 10],
+        ["R11", 11],
+        ["R12", 12],
+        ["R13", 13],
+        ["R14", 14],
+        ["R15", 15],
+        ["SCREEN", 16384],
+        ["KBD", 24576],
+    ]);
 }
