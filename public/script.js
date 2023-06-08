@@ -170,6 +170,11 @@ function parse(data) {
             output += `${bin}\n`;
         }
     }
+
+    if (output.match(/[^10\n]/g)) {
+        return "ERROR: ASM FILE IS CORRUPT!";
+    }
+
     return output;
 }
 
