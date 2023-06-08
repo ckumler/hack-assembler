@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" class="tui-bg-blue-black">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/asm.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="./tuicss.min.js" defer></script>
+        <link rel="stylesheet" href="./tuicss.min.css" />
+        <script src="./script.js" defer></script>
+        <link rel="stylesheet" href="style.css" />
+        <title>HACK Assembler</title>
+    </head>
+    <body>
+        <div
+            class="blue-255 full-width white-text"
+            style="padding: 0px 10px; margin-bottom: 5px"
+        >
+            HACK Assembler
+            <span class="tui-datetime" data-format="h:m:s a"></span>
+        </div>
+        <div id="container">
+            <div id="text-areas">
+                <div class="tui-window">
+                    <fieldset class="tui-fieldset">
+                        <legend class="center">Input</legend>
+                        <textarea
+                            class="tui-textarea"
+                            id="input-ta"
+                            rows="20"
+                        ></textarea>
+                    </fieldset>
+                </div>
+                <div class="tui-window">
+                    <fieldset class="tui-fieldset">
+                        <legend class="center">Output</legend>
+                        <textarea
+                            class="tui-textarea"
+                            id="output-ta"
+                            rows="20"
+                        ></textarea>
+                    </fieldset>
+                </div>
+            </div>
+            <button class="tui-button" id="assemble-btn">>Assemble!</button>
+        </div>
+    </body>
+</html>

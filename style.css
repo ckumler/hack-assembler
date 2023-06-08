@@ -1,0 +1,40 @@
+#container {
+    margin: auto;
+    max-width: min(80vw, 330px);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#assemble-btn {
+    margin: 10px;
+}
+.tui-window {
+    margin: 10px;
+    flex: 1;
+}
+.tui-fieldset {
+    width: 100%;
+}
+
+.tui-textarea {
+    width: 100%;
+    resize: vertical;
+}
+
+@media (min-width: 768px) {
+    #container {
+        max-width: 90vw;
+        min-width: 70vw;
+    }
+
+    .tui-window {
+        max-width: calc(45vw - 20px);
+        min-width: calc(35vw - 20px);
+    }
+    .tui-textarea {
+        height: max(700px, 80vh);
+    }
+}
