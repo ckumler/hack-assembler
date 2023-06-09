@@ -50,9 +50,22 @@ saveBtn.addEventListener("click", async () => {
         const writable = await handle.createWritable();
         await writable.write(text);
         await writable.close();
+        return;
     } catch (err) {
         console.error(err.name, err.message);
     }
+
+    //if showSaveFilePicker fails or is unavailable, use blob save
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = suggestedName;
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 });
 
 let variableNumber = 16;
