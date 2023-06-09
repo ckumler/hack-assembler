@@ -65,7 +65,7 @@ saveBtn.addEventListener("click", async () => {
     }
 
     // Blob-based method
-    const blob = new Blob([text], { type: "text/plain" });
+    const blob = new Blob([text], { type: "application/octet-stream" });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
