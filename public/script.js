@@ -36,26 +36,35 @@ saveBtn.addEventListener("click", async () => {
     const suggestedName = loadedFileName
         ? `${loadedFileName}.hack`
         : "output.hack";
-    const opts = {
-        suggestedName: suggestedName,
-        types: [
-            {
-                description: "Hack file",
-                accept: { "text/plain": [".hack"] },
-            },
-        ],
-    };
-    try {
-        const handle = await window.showSaveFilePicker(opts);
-        const writable = await handle.createWritable();
-        await writable.write(text);
-        await writable.close();
-        return;
-    } catch (err) {
-        console.error(err.name, err.message);
+
+    if (window.showSaveFilePicker) {
+        const opts = {
+            suggestedName: suggestedName,
+            types: [
+                {
+                    description: "Hack file",
+                    accept: { "text/plain": [".hack"] },
+                },
+            ],
+        };
+
+        try {
+            const handle = await window.showSaveFilePicker(opts);
+            const writable = await handle.createWritable();
+            await writable.write(text);
+            await writable.close();
+            return;
+        } catch (err) {
+            console.error(err.name, err.message);
+
+            // If showSaveFilePicker fails due to user cancellation, don't fall through
+            if (err.name === "AbortError") {
+                return;
+            }
+        }
     }
 
-    //if showSaveFilePicker fails or is unavailable, use blob save
+    // Blob-based method
     const blob = new Blob([text], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
 
